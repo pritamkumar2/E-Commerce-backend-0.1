@@ -49,6 +49,13 @@ const userSchema = new mongoose.Schema({
       ref: "reviews",
     },
   ],
+  isVerified: {
+    type: Boolean, // Fixed typo: boolean -> Boolean
+    default: false,
+  },
+  token: {
+    type: String,
+  },
   resetPasswordOTP: {
     type: String,
   },

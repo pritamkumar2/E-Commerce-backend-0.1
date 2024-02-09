@@ -10,13 +10,13 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send OTP email
-const sendOTPEmail = async (toEmail, otp) => {
+const sendOTPEmail = async (toEmail, otp,randomstring) => {
   try {
     await transporter.sendMail({
       from: "gitamapptech@gmail.com",
       to: toEmail,
       subject: "Password Reset OTP",
-      html: `<p>Your OTP for password reset is: <strong>${otp}</strong></p>`,
+      html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
     });
     console.log("OTP email sent successfully");
   } catch (error) {
@@ -25,4 +25,19 @@ const sendOTPEmail = async (toEmail, otp) => {
   }
 };
 
-module.exports = { sendOTPEmail };
+const sendVerifyEmail = async (toEmail,mailSubject, content) => {
+  try {
+    await transporter.sendMail({
+      from: "gitamapptech@gmail.com",
+      to: toEmail,
+      subject: mailSubject,
+      html: content,
+    });
+    console.log("vrefication mail sent successfully");
+  } catch (error) {
+    console.error("Error sending OTP email:", error);
+    throw error;
+  }
+};
+
+module.exports = { sendOTPEmail,sendVerifyEmail };

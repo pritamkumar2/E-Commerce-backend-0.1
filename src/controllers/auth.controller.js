@@ -3,10 +3,26 @@ const jwtProvider = require("../config/jwtProvider.js");
 const bcrypt = require("bcrypt");
 const cartService = require("../services/cart.service.js");
 const emailService = require("../services/email.service.js");
-
+const randomStringService = require("randomstring");
+console.log(randomStringService.generate());
 const register = async (req, res) => {
   try {
-    const user = await userService.createUser(req.body);
+    const { firstName, lastName, email, password } = req.body;
+
+    const randomToken = randomStringService.generate();
+    const mailSubject = "email verification";
+    const toEmail = email;
+    const verificationLink = `http://localhost:5454/auth/mail_verification?token=${randomToken}&email=${toEmail}`;
+    const content = `<p>Hi ${firstName} ${lastName},<br>Please <a href="${verificationLink}">verify</a> your email.</p>`;
+    emailService.sendVerifyEmail(toEmail, mailSubject, content);
+
+    const user = await userService.createUser({
+      firstName,
+      lastName,
+      email,
+      password,
+      token: randomToken,
+    });
     const jwt = jwtProvider.generateToken(user._id);
     await cartService.createCart(user);
     return res.status(200).send({ jwt, message: "Register success" });
@@ -118,4 +134,34 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, forgotPassword, resetPassword };
+const verifyUSerEmail = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const email = req.query.email;
+    const user = await userService.findUserByEmail(email, token);
+    if (user.token === token) {
+      user.isVerified = true;
+      user.token = null;
+      await user.save();
+      const jwt = jwtProvider.generateToken(user._id);
+      console.log("User saved successfully");
+      return res
+        .status(200)
+        .send({ jwt,message: "user verify successfully" });
+    } else {
+      return res
+        .status(222)
+        .send({ user, message: " unsuccessfully try again" });
+    }
+  } catch (error) {
+    console.error("Error in email verify", error);
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  forgotPassword,
+  resetPassword,
+  verifyUSerEmail,
+};

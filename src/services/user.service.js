@@ -5,12 +5,15 @@ const jwtProvider = require("../config/jwtProvider");
 
 const createUser = async (userData) => {
   try {
-    let { firstName, lastName, email, password, role } = userData;
+    let { firstName, lastName, email, password, role, isVerifted, token } =
+      userData;
 
     const isUserExist = await User.findOne({ email });
 
     if (isUserExist) {
       throw new Error("user already exist with email : ", email);
+    } else {
+      // console.log("created user", userData);
     }
 
     password = await bcrypt.hash(password, 10);
@@ -21,9 +24,11 @@ const createUser = async (userData) => {
       email,
       password,
       role,
+      isVerifted,
+      token,
     });
 
-    console.log("user ", user);
+    console.log("here is the user  ", user);
 
     return user;
   } catch (error) {
@@ -119,6 +124,16 @@ const findByIdAndUpdate = async (userId, update) => {
     throw new Error(error.message);
   }
 };
+const findUserByEmail = async (email,token) => {
+  try {
+    const user = await User.findOne({ email });
+    
+    return user;
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    throw error;
+  }
+};
 
 module.exports = {
   createUser,
@@ -128,4 +143,5 @@ module.exports = {
   getAllUsers,
   updateUserPassword,
   findByIdAndUpdate,
+  findUserByEmail,
 };
