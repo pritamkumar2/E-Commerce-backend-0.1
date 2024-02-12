@@ -10,6 +10,7 @@ router.post("/signin", authController.login).get((req, res) => {
 router.post("/forgot-password", authController.forgotPassword);
 router.get("/mail_verification", authController.verifyUSerEmail);
 
+
 // Route to handle reset password request
 router.post("/reset-password", authController.resetPassword);
 

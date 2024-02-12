@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const cartService = require("../services/cart.service.js");
 const emailService = require("../services/email.service.js");
 const randomStringService = require("randomstring");
+const path = require('path');
+const fs = require('fs');
+const ejs = require('ejs');
 console.log(randomStringService.generate());
 const register = async (req, res) => {
   try {
@@ -141,22 +144,21 @@ const verifyUSerEmail = async (req, res) => {
     const user = await userService.findUserByEmail(email, token);
     if (user.token === token) {
       user.isVerified = true;
-      user.token = null;
+      // user.token = null;
       await user.save();
       const jwt = jwtProvider.generateToken(user._id);
-      console.log("User saved successfully");
-      return res
-        .status(200)
-        .send({ jwt,message: "user verify successfully" });
+      const indexPath = path.join(__dirname, '..', 'page', 'index.ejs');
+
+      res.status(200).render( indexPath, {jwt:jwt,email:user.email});
     } else {
-      return res
-        .status(222)
-        .send({ user, message: " unsuccessfully try again" });
+      const indexPath = path.join(__dirname, '..', 'page', 'index.ejs');
+      res.status(400).send({message: 'Login failed'});
     }
   } catch (error) {
     console.error("Error in email verify", error);
   }
 };
+
 
 module.exports = {
   register,

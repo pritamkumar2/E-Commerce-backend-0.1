@@ -1,4 +1,5 @@
 const { app } = require(".");
+const ejs = require("ejs");
 const { connectDb } = require("./config/db");
 
 const PORT = 5454;
