@@ -4,9 +4,9 @@ const bcrypt = require("bcrypt");
 const cartService = require("../services/cart.service.js");
 const emailService = require("../services/email.service.js");
 const randomStringService = require("randomstring");
-const path = require('path');
-const fs = require('fs');
-const ejs = require('ejs');
+const path = require("path");
+const fs = require("fs");
+const ejs = require("ejs");
 console.log(randomStringService.generate());
 const register = async (req, res) => {
   try {
@@ -15,7 +15,7 @@ const register = async (req, res) => {
     const randomToken = randomStringService.generate();
     const mailSubject = "email verification";
     const toEmail = email;
-    const verificationLink = `http://localhost:5454/auth/mail_verification?token=${randomToken}&email=${toEmail}`;
+    const verificationLink = `https://e-commerce-bakend.onrender.com/auth/mail_verification?token=${randomToken}&email=${toEmail}`;
     const content = `<p>Hi ${firstName} ${lastName},<br>Please <a href="${verificationLink}">verify</a> your email.</p>`;
     emailService.sendVerifyEmail(toEmail, mailSubject, content);
 
@@ -147,18 +147,17 @@ const verifyUSerEmail = async (req, res) => {
       // user.token = null;
       await user.save();
       const jwt = jwtProvider.generateToken(user._id);
-      const indexPath = path.join(__dirname, '..', 'page', 'index.ejs');
+      const indexPath = path.join(__dirname, "..", "page", "index.ejs");
 
-      res.status(200).render( indexPath, {jwt:jwt,email:user.email});
+      res.status(200).render(indexPath, { jwt: jwt, email: user.email });
     } else {
-      const indexPath = path.join(__dirname, '..', 'page', 'index.ejs');
-      res.status(400).send({message: 'Login failed'});
+      const indexPath = path.join(__dirname, "..", "page", "index.ejs");
+      res.status(400).send({ message: "Login failed" });
     }
   } catch (error) {
     console.error("Error in email verify", error);
   }
 };
-
 
 module.exports = {
   register,

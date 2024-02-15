@@ -4,16 +4,16 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "gitamapptech@gmail.com",
-    pass: "ajza yvpi ptur jinv",
+    user: "pri.300118@gmail.com",
+    pass: "ukzs ftji jgmb mytj",
   },
 });
 
 // Function to send OTP email
-const sendOTPEmail = async (toEmail, otp,randomstring) => {
+const sendOTPEmail = async (toEmail, otp, randomstring) => {
   try {
     await transporter.sendMail({
-      from: "gitamapptech@gmail.com",
+      from: "pri.300118@gmail.com",
       to: toEmail,
       subject: "Password Reset OTP",
       html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
@@ -25,10 +25,10 @@ const sendOTPEmail = async (toEmail, otp,randomstring) => {
   }
 };
 
-const sendVerifyEmail = async (toEmail,mailSubject, content) => {
+const sendVerifyEmail = async (toEmail, mailSubject, content) => {
   try {
     await transporter.sendMail({
-      from: "gitamapptech@gmail.com",
+      from: "pri.300118@gmail.com",
       to: toEmail,
       subject: mailSubject,
       html: content,
@@ -40,4 +40,4 @@ const sendVerifyEmail = async (toEmail,mailSubject, content) => {
   }
 };
 
-module.exports = { sendOTPEmail,sendVerifyEmail };
+module.exports = { sendOTPEmail, sendVerifyEmail };
